@@ -1,7 +1,19 @@
 #! /usr/bin/env ruby
 
+require 'open-uri'
+
 ['cn', 'au'].each do |country|
-    ips = File.open(country + '.txt').readlines.map{|v| v.chomp}
+    url = 'https://ipv4.fetus.jp/' + country + '.txt'
+
+    ips = []
+    open(url) do |file|
+        file.each_line {|line|
+            next if line.chomp.start_with?("#")
+            next if line.chomp.empty?
+            ips.push(line.chomp)
+        }
+    end
+
     cnt = 1
 
     ips.each_slice(254) do |ary|
